@@ -79,13 +79,25 @@
                 updateView();
             }
 
-            async function fetchFavorites() {
+            async function fetchFavorites(){
+                // fetch the favorite list from db
                 const favoritesData = await fetch("/favorites")
                     .catch((error) => {console.log(error);
                         throw error;
                     });
                 const favoritesArray = await favoritesData.json();
                 favorites = favoritesArray;
+                return favoritesArray;
+            }
+
+            async function updateFavoritesBarItems(){
+                const favorites = await fetchFavorites;
+                const favorites_bar = document.getElementById("favorites_bar");
+
+                // testing code
+                console.log(favorites_bar);
+                const newOption = new Option('Option Text','Option Value');
+                favorites_bar.appendChild(newOption);
             }
 
             async function fetchData(zip) {
@@ -148,7 +160,8 @@
             }
         </script>
     </head>
-    <body>
+    <!-- if I don't set this as on load here, it will run before the select element exists and caus error -->
+    <body onload="updateFavoritesBarItems()">
         <script>
             // variable to log the previous viable zip
             let previousZip = "";
@@ -158,14 +171,14 @@
             let temperatureUnitFahrenheit = true;
             // initial fetching of favorite bar
             let favorites = [];
-            fetchFavorites();
 
 
         </script>
         <p>Enter a zip code</p>
         <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
         <h1 id="locale">Weather</h1>
-        <button id ="add_to_favorites" disabled="disabled">Add to Favorites</button>Go to favorite:<select id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
+        <!-- added name for the favorites bar because it is needed for returning  -->
+        <button id ="add_to_favorites" disabled="disabled">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
         <p>Current Temperature</p>
         <h2 id="temperature"></h2>
         <button id="temperature_unit_change" disabled='disabled' onclick="onUnitChange()">Switch to Celsius</button>
