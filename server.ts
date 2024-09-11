@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import favoriteRouter from "./routes/favorite";
 
 // create application
 const app = express();
@@ -12,10 +13,8 @@ app.use(express.static("public"));
 // to support JSON-encoded bodies
 app.use(bodyParser.json());
 
-// API Hello World for testing
-app.get("/api", (req, res) => {
-    res.send("Hello World from the API!");
-});  
+// mount the router on the app
+app.use("/favorites", favoriteRouter);
 
 // starts the server listening on the specified port
 app.listen(port, ()=>{
