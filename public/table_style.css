@@ -1,0 +1,19 @@
+/*Based on what I found on https://www.w3schools.com/html/html_table_borders.asp*/
+/*Note to myself, check out https://www.w3schools.com/css/css_selectors.asp if I want to add more tables*/
+#result, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+}
+/*Based on other stuff on the same site*/
+th{
+    font-weight: normal;
+    text-align: left;
+}
+td{
+    font-weight: bold;
+    text-align: center;
+}
+* {
+    font-family: 'Times New Roman', Times, serif;
+}
