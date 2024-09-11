@@ -160,7 +160,7 @@
             }
         </script>
     </head>
-    <!-- if I don't set this as on load here, it will run before the select element exists and caus error -->
+    <!-- if I don't set this as on load here but run it in the body script instead, it will run before the select element exists and caus error -->
     <body onload="updateFavoritesBarItems()">
         <script>
             // variable to log the previous viable zip
@@ -177,7 +177,7 @@
         <p>Enter a zip code</p>
         <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
         <h1 id="locale">Weather</h1>
-        <!-- added name for the favorites bar because it is needed for returning  -->
+        <!-- added name for the favorites bar because it is needed for returning according to source I found-->
         <button id ="add_to_favorites" disabled="disabled">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
         <p>Current Temperature</p>
         <h2 id="temperature"></h2>
