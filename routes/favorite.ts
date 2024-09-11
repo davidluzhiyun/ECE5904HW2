@@ -12,3 +12,22 @@ router.get("/", async (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(JSON.stringify(favorites));
 });
+
+//POST /favorites - adds a new favorite item
+router.post("/", async (req, res) => {
+    console.log("POST /favorites");
+    const data = req.body;
+
+    if (!data.name || !data.zip) {
+        res.status(400).send("Location name and zip are required");
+        return;    
+    }
+
+    // create a location and add to favorite
+    const location = await dbFavorite.create(data.name, data.zip);
+
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(location));  
+});
+
+//DELETE /favorites/:id - deletes a favorite item by id
