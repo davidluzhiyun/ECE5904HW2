@@ -26,5 +26,22 @@ export const create = async (name: string, zip: string) => {
     };
     favorites.push(location);
     return location;
-  };
+};
+
+export const getAll = async () => {
+    return favorites;
+};
+  
+export const get = async (locationId: string) => {
+    const location = favorites.find((location) => location.id === locationId);
+    return location;
+};
+
+export const remove = async (locationId: string) => {
+    const index = favorites.findIndex((location) => location.id === locationId);
+    if (index === -1) return undefined;
+  
+    const location = favorites.splice(index, 1);
+    return location;
+};
   
