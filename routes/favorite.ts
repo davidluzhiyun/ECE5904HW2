@@ -30,7 +30,7 @@ router.post("/", async (req, res) => {
     res.send(JSON.stringify(location));  
 });
 
-//DELETE /favorites/:id - deletes a favorite item by id
+//DELETE /favorites/:id - deletes a favorite item by id (zip)
 router.delete("/:id", async (req, res) =>{
     const {id} = req.params;
     console.log(`DELETE /favorites/${id}`);
