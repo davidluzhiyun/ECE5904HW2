@@ -31,3 +31,15 @@ router.post("/", async (req, res) => {
 });
 
 //DELETE /favorites/:id - deletes a favorite item by id
+router.delete("/:id", async (req, res) =>{
+    const {id} = req.params;
+    console.log(`DELETE /favorites/${id}`);
+
+    const location = await dbFavorite.remove(id);
+    const status = location ? { status: "success" } : { status: "error" };
+
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(status));  
+});
+
+export default router;
