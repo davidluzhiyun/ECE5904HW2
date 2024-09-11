@@ -79,6 +79,15 @@
                 updateView();
             }
 
+            async function fetchFavorites() {
+                const favoritesData = await fetch("/favorites")
+                    .catch((error) => {console.log(error);
+                        throw error;
+                    });
+                const favoritesArray = await favoritesData.json();
+                favorites = favoritesArray;
+            }
+
             async function fetchData(zip) {
                 // fetches data from api with fetch API
                 const base = "http://api.weatherapi.com/v1/forecast.json?key=";
@@ -147,8 +156,10 @@
             let responseData = ""
             // variable to check the temperature unit
             let temperatureUnitFahrenheit = true;
+            // initial fetching of favorite bar
+            let favorites = [];
+            fetchFavorites();
 
-            formatDate("2024-09-03")
 
         </script>
         <p>Enter a zip code</p>
