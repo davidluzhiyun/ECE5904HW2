@@ -12,7 +12,7 @@ app.use(express.static("public"));
 // to support JSON-encoded bodies
 app.use(bodyParser.json());
 
-// API Hello World, also helps for testing
+// API Hello World for testing
 app.get("/api", (req, res) => {
     res.send("Hello World from the API!");
 });  
