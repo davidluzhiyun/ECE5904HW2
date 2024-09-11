@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Weather</title>
+        <!--Base on https://www.w3schools.com/html/html_css.asp-->
+        <link rel="stylesheet" href="table_style.css">
+        <script>
+            const apiKey = "79c4fe56c5264162aba15443240309";
+
+            function isZip(my_str) {
+                // based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/test
+                // str is the str that we recieve from the input
+                // regex to test if a US zip code is entered
+                const re = /\d{5}/;
+                const result = re.test(my_str);
+                return result;
+            }
+
+            function formatDate(date){
+                //Since js defaults to UTC in construction then convert to string use en-US by our setting, messing up the day
+                //we need to add a timezone to fix it
+                //construct date 
+                const objectDate = new Date(date+"-05:00");
+                //output the converted form. Need to set en-US as locle, which messes up the date
+                const converted = objectDate.toLocaleString('en-US', {month:"short", day:"numeric"});
+                return converted;
+            }
+
+            function updateView(){
+                // Update everything based on retrieved data, if any
+                if (responseData === ""){
+                    // if called when there is no response data yet, don't do anything
+                    return;
+                }
+
+                // Update weather title
+                const localeText = "Weather for " + responseData["location"]["name"] + ", " + responseData["location"]["region"];
+                document.getElementById("locale").innerHTML = localeText;
+
+
+                // dictionary to help reduce duplicate code
+                const textsToUse = {true:['f',"°F","Celsius"],
+                                    false:['c',"°C","Fahrenheit"]};
+
+                //Update text for current temperature
+                const tempValue = responseData["current"]["temp_" + textsToUse[temperatureUnitFahrenheit][0]];
+                const tempText = tempValue + textsToUse[temperatureUnitFahrenheit][1];
+                document.getElementById("temperature").innerHTML = tempText;
+                
+                //Update the unit switch botton
+                const unitChangeButton = document.getElementById("temperature_unit_change");
+                unitChangeButton.innerHTML = "Switch to " + textsToUse[temperatureUnitFahrenheit][2];
+                document.getElementById("temperature_unit_change").disabled = false;
+
+                //Update the table
+                const table = document.getElementById("result");
+                for (let i = 1; i <= 3; i++) {
+                    let row = table.rows[i];
+                    let dayData = responseData["forecast"]["forecastday"][i-1]["day"];
+
+                    //Day
+                    let date = responseData["forecast"]["forecastday"][i-1]["date"];
+                    row.cells[0].innerHTML = formatDate(date);
+                    //High 
+                    row.cells[1].innerHTML = dayData["maxtemp_" + textsToUse[temperatureUnitFahrenheit][0]] + textsToUse[temperatureUnitFahrenheit][1];
+                    //Low
+                    row.cells[2].innerHTML = dayData["mintemp_" + textsToUse[temperatureUnitFahrenheit][0]] + textsToUse[temperatureUnitFahrenheit][1];
+                    //Condition
+                    row.cells[3].innerHTML = dayData["condition"]["text"]
+                }
+
+            }
+
+            function onUnitChange(){
+                //Change the unit
+                //Flip the unit flag
+                temperatureUnitFahrenheit = !temperatureUnitFahrenheit;
+                //Update
+                updateView();
+            }
+
+            async function fetchData(zip) {
+                // fetches data from api with fetch API
+                const base = "http://api.weatherapi.com/v1/forecast.json?key=";
+                const ending = "&days=3&aqi=no&alerts=no";
+                const url = base + apiKey + "&q=" + zip + ending;
+                const data = await fetch(url)
+                // if there is a error for fetch log and alert
+                    .catch((error) => {console.log(error);
+                        alert(error);
+                        // revert to previous the valid zip or blank
+                        console.log(document.getElementById("zip"))
+                        document.getElementById("zip").value = previousZip;
+                        // throw error so that the function doesn't keep executing
+                        // for some reason return here would cause the function to keep executing the following lines
+                        // for this reson console would say uncaught error
+                        throw error;
+                    });
+                const json = await data.json();
+                return json;
+            }
+
+            async function onZipSubmission(){
+                // get the zip from input field
+                const zip = document.getElementById("zip").value;
+                // if it isn't a valid US zip code reject and alert
+                if (!isZip(zip)){
+                    alert("Invalid US zip code");
+                    console.log("Invalid US zip code")
+                    // revert to previous the valid zip or blank
+                    document.getElementById("zip").value = previousZip;
+                    return;
+                }
+
+                // change to stuff to handle result
+                // remember to await! or else the this function will keep running when waiting for alert to be closed
+                const tempResponseData = await fetchData(zip);
+                
+                // If it is an error json response
+                // Based on https://stackoverflow.com/questions/20804163/check-if-a-key-exists-inside-a-json-object
+                if (tempResponseData.hasOwnProperty("error")){
+                    //alert error
+                    alert(tempResponseData["error"]["message"]);
+                    console.log(tempResponseData["error"]["message"])
+                    // revert input
+                    document.getElementById("zip").value = previousZip;
+                    return;
+                }
+
+                responseData = tempResponseData;
+
+                //Update previousZip after fetching if fetch sucessful
+                previousZip = zip;
+
+                //Log the response just in case
+                console.log(responseData);
+
+                updateView();
+            }
+        </script>
+    </head>
+    <body>
+        <script>
+            // variable to log the previous viable zip
+            let previousZip = "";
+            // variable to log the response data
+            let responseData = ""
+            // variable to check the temperature unit
+            let temperatureUnitFahrenheit = true;
+
+            formatDate("2024-09-03")
+
+        </script>
+        <p>Enter a zip code</p>
+        <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
+        <h1 id="locale">Weather</h1>
+        <p>Current Temperature</p>
+        <h2 id="temperature"></h2>
+        <button id="temperature_unit_change" disabled='disabled' onclick="onUnitChange()">Switch to Celsius</button>
+        <p>3 day Forecast</p>
+        <table id="result">
+            <tr>
+                <th>Day</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Conditions</th>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </body>
+</html>
