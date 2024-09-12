@@ -93,6 +93,7 @@
             }
 
             function deselectFavorite(){
+                // deselect favorite bar
                 const favorites_bar = document.getElementById("favorites_bar");
                 favorites_bar.selectedIndex = -1;
             }
@@ -119,7 +120,37 @@
                 return favoritesArray;
             }
 
+            function matchFavorite(){
+                // handles situations where the zip being looked up matchs or doesn't macth existing favorite
+                
+                const favorites_bar = document.getElementById("favorites_bar");
+                const add_to_favorites = document.getElementById("add_to_favorites");
+                const delete_favorite = document.getElementById("delete_favorite");
+
+                //test code
+                // favorites_bar.value = "123"
+                // console.log(favorites_bar.value);
+                // if(!favorites_bar.value){
+                //     console.log("value not in favorite")
+                // }
+                
+                // This sets the drop down to the zip if it is in the favorite bar
+                // If not this automatically deselects the bar and the bar has value '', !'' evaluates to true
+                favorites_bar.value = previousZip;
+                if(!favorites_bar.value){
+                    // if zip is not in favorites_bar, deselect (already done) and enable the add button and disable the delete button
+                    add_to_favorites.disabled = false;
+                    delete_favorite.disabled = true;
+                }
+                else{
+                    // if zip is in favorites_bar, select (already done) and disable the add button and enable the delete button
+                    add_to_favorites.disabled = true;
+                    delete_favorite.disabled = false;
+                }
+            }
+
             async function updateFavoritesBarItems(){
+                // update content of favorite bar according to db
                 const favorites = await fetchFavorites();
                 const favorites_bar = document.getElementById("favorites_bar");
 
@@ -193,6 +224,9 @@
                 console.log(responseData);
 
                 updateView();
+
+                //adjust the favorites
+                matchFavorite(); 
             }
         </script>
     </head>
@@ -213,7 +247,7 @@
         <p>Enter a zip code</p>
         <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
         <h1 id="locale">Weather</h1>
-        <!-- added name for the favorites bar because it is needed for returning according to source I found-->
+        <!-- added name for the favorites bar because it is needed for returning according to sources I found-->
         <button id ="add_to_favorites" disabled="disabled">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
         <p>Current Temperature</p>
         <h2 id="temperature"></h2>
