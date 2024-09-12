@@ -91,7 +91,7 @@
                 //Set no option or deselected
                 checkForNoFavorite();
 
-                // fix wired behavior of nodejs
+                // fix weird behavior of nodejs
                 const add_to_favorites = document.getElementById("add_to_favorites");
                 add_to_favorites.disabled = true;
                 const delete_favorite = document.getElementById("delete_favorite");
@@ -133,6 +133,7 @@
                 const add_to_favorites = document.getElementById("add_to_favorites");
                 const delete_favorite = document.getElementById("delete_favorite");
 
+                favorites_bar.disabled = false;
                 //test code
                 // favorites_bar.value = "123"
                 // console.log(favorites_bar.value);
@@ -154,7 +155,11 @@
                     delete_favorite.disabled = false;
                 }
                 // if there are no favorites
-                checkForNoFavorite();
+                if (favorites.length === 0){
+                    const emptyOption = new Option("No Favorites","");
+                    favorites_bar.appendChild(emptyOption);
+                    favorites_bar.disabled = true;
+                }
             }
 
             async function onAddFavorite() {
@@ -244,8 +249,8 @@
                     favorites_bar.disabled = true;
                 }
                 else{
-                    favorites_bar.disabled = false;
-                    deselectFavorite();                    
+                    deselectFavorite();
+                    favorites_bar.disabled = false;                
                 }
             }
             
