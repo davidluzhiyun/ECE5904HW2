@@ -78,6 +78,35 @@
                 //Update
                 updateView();
             }
+            
+            async function onLoad() {
+                // onLoad function for homework2
+                
+                // clear input box
+                document.getElementById("zip").value = '';
+
+                // fetch data and update favorite bar
+                await updateFavoritesBarItems();
+
+                // deselect
+                deselectFavorite();
+            }
+
+            function deselectFavorite(){
+                const favorites_bar = document.getElementById("favorites_bar");
+                favorites_bar.selectedIndex = -1;
+            }
+
+            function makeOption(item) {
+                const name = item?.name;
+                const zip = item?.zip;
+                if (!name || !zip){
+                    throw error;
+                }
+                const optionText = name + " (" + zip + ")";
+                const newOption = new Option(optionText, zip);
+                return newOption;
+            }
 
             async function fetchFavorites(){
                 // fetch the favorite list from db
@@ -91,13 +120,20 @@
             }
 
             async function updateFavoritesBarItems(){
-                const favorites = await fetchFavorites;
+                const favorites = await fetchFavorites();
                 const favorites_bar = document.getElementById("favorites_bar");
 
-                // testing code
-                console.log(favorites_bar);
-                const newOption = new Option('Option Text','Option Value');
-                favorites_bar.appendChild(newOption);
+                // //testing code
+                // console.log(favorites_bar);
+                // const newOption = new Option('Option Text','Option Value');
+                // favorites_bar.appendChild(newOption);
+
+                // clear favorite_bar before proceeding
+                favorites_bar.length = 0;
+
+                favorites.forEach(element => {
+                    favorites_bar.appendChild(makeOption(element));
+                });
             }
 
             async function fetchData(zip) {
@@ -161,7 +197,7 @@
         </script>
     </head>
     <!-- if I don't set this as on load here but run it in the body script instead, it will run before the select element exists and caus error -->
-    <body onload="updateFavoritesBarItems()">
+    <body onload="onLoad()">
         <script>
             // variable to log the previous viable zip
             let previousZip = "";
