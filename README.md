@@ -54,3 +54,4 @@ npm run start
 // Or if you are developing and you want nodemon to turn off and on the server for you each time there is a change made
 npm run dev
 ```
+Then open http://localhost:3000 on a browser
