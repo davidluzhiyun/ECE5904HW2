@@ -90,10 +90,12 @@
 
                 //Set no option or deselected
                 checkForNoFavorite();
+
+                // fix wired behavior of nodejs
                 const add_to_favorites = document.getElementById("add_to_favorites");
                 add_to_favorites.disabled = true;
                 const delete_favorite = document.getElementById("delete_favorite");
-                add_to_favorites.disabled = true;
+                delete_favorite.disabled = true;
             }
 
             function deselectFavorite(){
