@@ -149,6 +149,37 @@
                 }
             }
 
+            async function onAddFavorite() {
+                // reset input field in case the user changed it without submitting
+                document.getElementById("zip").value = previousZip;
+
+                const locationZip = previousZip;
+                const locationName = responseData["location"]["name"] + ", " + responseData["location"]["region"];
+                
+                // add location to db
+                await fetch("favorites", {
+                    // method type
+                    method:"POST",
+
+                    // stuff to post
+                    body:JSON.stringify({
+                        zip:locationZip,
+                        name:locationName
+                    }),
+
+                    //headers
+                    headers: { "Content-type": "application/json"} 
+
+                })
+                .catch((error) => {console.log(error);
+                        throw error;
+                });
+ 
+                // refetch and update favorite bar
+                await updateFavoritesBarItems();
+                matchFavorite()
+            }
+
             async function updateFavoritesBarItems(){
                 // update content of favorite bar according to db
                 const favorites = await fetchFavorites();
@@ -248,7 +279,7 @@
         <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
         <h1 id="locale">Weather</h1>
         <!-- added name for the favorites bar because it is needed for returning according to sources I found-->
-        <button id ="add_to_favorites" disabled="disabled">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
+        <button id ="add_to_favorites" disabled="disabled" onclick="onAddFavorite()">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled">Delete Favorite</button>
         <p>Current Temperature</p>
         <h2 id="temperature"></h2>
         <button id="temperature_unit_change" disabled='disabled' onclick="onUnitChange()">Switch to Celsius</button>
