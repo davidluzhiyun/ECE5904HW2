@@ -197,6 +197,18 @@
                 matchFavorite();
             }
 
+            async function onSelectFavorite() {
+                // search once a favorite is selected
+
+                const favorite_bar = document.getElementById("favorites_bar");
+                // Auto fill the input
+                const zip = favorite_bar.value;
+                document.getElementById("zip").value = zip;
+
+                //search
+                await onZipSubmission();
+            }
+
             async function updateFavoritesBarItems(){
                 // update content of favorite bar according to db
                 const favorites = await fetchFavorites();
@@ -295,8 +307,7 @@
         <p>Enter a zip code</p>
         <input type="text" id="zip"> <button onclick="onZipSubmission()">Get Forecast</button>
         <h1 id="locale">Weather</h1>
-        <!-- added name for the favorites bar because it is needed for returning according to sources I found-->
-        <button id ="add_to_favorites" disabled="disabled" onclick="onAddFavorite()">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select name="favorites_bar_name" id="favorites_bar"></select><button id ="delete_favorite" disabled="disabled" onclick="onDeleteFavorite()">Delete Favorite</button>
+        <button id ="add_to_favorites" disabled="disabled" onclick="onAddFavorite()">Add to Favorites</button><label for="favorites_bar">Go to favorite:</label><select id="favorites_bar" onchange="onSelectFavorite()"></select><button id ="delete_favorite" disabled="disabled" onclick="onDeleteFavorite()">Delete Favorite</button>
         <p>Current Temperature</p>
         <h2 id="temperature"></h2>
         <button id="temperature_unit_change" disabled='disabled' onclick="onUnitChange()">Switch to Celsius</button>
