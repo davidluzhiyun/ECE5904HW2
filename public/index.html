@@ -88,8 +88,10 @@
                 // fetch data and update favorite bar
                 await updateFavoritesBarItems();
 
-                // deselect
-                deselectFavorite();
+                //Set no option or deselected
+                checkForNoFavorite();
+                const add_to_favorites = document.getElementById("add_to_favorites");
+                add_to_favorites.disabled = true;
             }
 
             function deselectFavorite(){
@@ -147,6 +149,8 @@
                     add_to_favorites.disabled = true;
                     delete_favorite.disabled = false;
                 }
+                // if there are no favorites
+                checkForNoFavorite();
             }
 
             async function onAddFavorite() {
@@ -211,7 +215,7 @@
 
             async function updateFavoritesBarItems(){
                 // update content of favorite bar according to db
-                const favorites = await fetchFavorites();
+                favorites = await fetchFavorites();
                 const favorites_bar = document.getElementById("favorites_bar");
 
                 // //testing code
@@ -226,6 +230,21 @@
                     favorites_bar.appendChild(makeOption(element));
                 });
             }
+
+            function checkForNoFavorite() {
+                const favorites_bar = document.getElementById("favorites_bar");
+                // if there is none
+                if (favorites.length === 0){
+                    const emptyOption = new Option("No Favorites","");
+                    favorites_bar.appendChild(emptyOption);
+                    favorites_bar.disabled = true;
+                }
+                else{
+                    favorites_bar.disabled = false;
+                    deselectFavorite();                    
+                }
+            }
+            
 
             async function fetchData(zip) {
                 // fetches data from api with fetch API
